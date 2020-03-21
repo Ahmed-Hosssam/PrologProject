@@ -11,8 +11,15 @@ perm([H|T],A):-
 get_subsets([],[]).
 
 get_subsets([H|T],[H|L2]):-
+	\+ H = activity(_),
     get_subsets(T,L2).
     
+get_subsets([activity(X)|T],[activity(H1)|T1]):-
+	
+	get_subsets(X,H1),
+	H1 \= [],
+	get_subsets(T,T1).
+	
 get_subsets([_|T],L):-
     get_subsets(T,L).
 	
@@ -20,18 +27,12 @@ possibleSubset(L,A):-
 	get_subsets(L,A1),
 	perm(A1,A).
 	
-	choosePreferences([],[]).
+choosePreferences(L,R):-
+	get_subsets(L,R).
+	
+bigger_Or_Equal_Period(A,B,C,X,Y,Z):-
+    A>X;(A==X,B>Y);(A==X,B==Y,C>=Z).
+overlapPeriod(period(A-B-C,X-Y-Z),period(A2-B2-C2,X2-Y2-Z2)):-
+    bigger_Or_Equal_Period(X2,Y2,Z2,A,B,C),bigger_Or_Equal_Period(X,Y,Z,A2,B2,C2).
 
-choosePreferences([H|T],[activity(H1)|T1]):-
-	H = activity(X),
-	get_subsets(X,H1),
-	H1 \= [],
-	choosePreferences(T,T1).
-	
-choosePreferences([H|T],[H|T1]):-
-	\+ H=activity(_),
-	choosePreferences(T,T1).
-	
-choosePreferences([_|T],T1):-
-	choosePreferences(T,T1).
 	
