@@ -20,3 +20,18 @@ possibleSubset(L,A):-
 	get_subsets(L,A1),
 	perm(A1,A).
 	
+	choosePreferences([],[]).
+
+choosePreferences([H|T],[activity(H1)|T1]):-
+	H = activity(X),
+	get_subsets(X,H1),
+	H1 \= [],
+	choosePreferences(T,T1).
+	
+choosePreferences([H|T],[H|T1]):-
+	\+ H=activity(_),
+	choosePreferences(T,T1).
+	
+choosePreferences([_|T],T1):-
+	choosePreferences(T,T1).
+	
