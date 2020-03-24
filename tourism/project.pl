@@ -24,6 +24,10 @@ customerPreferredAccommodation(customer(mohamed, elkasad, 1999-01-30, single, 0,
 customerPreferredAccommodation(customer(mohamed, elkasad, 1999-01-30, single, 0, student), cabin,
 79).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+contains([H|T],E):-
+	H = E;
+	contains(T,E).
+
 insert(E,L,[E|L]).
 insert(E,[H|T],[H|A]):-
 	insert(E,T,A).
@@ -65,17 +69,17 @@ preferenceSatisfaction(_, _, [], 0).
 preferenceSatisfaction(Offer, Customer, [means(X)|T], S):-
 	preferenceSatisfaction(Offer, Customer, T, S1),
 	customerPreferredMean(Customer,X,R),
-	S is R+S1.
+	((offerMean(Offer,X),S is R+S1);((\+offerMean(Offer,X)) , S is S1)).
 	
 preferenceSatisfaction(Offer, Customer, [accommodation(X)|T], S):-
 		preferenceSatisfaction(Offer, Customer, T, S1),
 		customerPreferredAccommodation(Customer,X,R),
-		S is R+S1.
+		((offerAccommodation(Offer,X),S is R+S1);((\+offerAccommodation(Offer,X)) , S is S1)).
 				
-preferenceSatisfaction(Offer, Customer, [activity([X|Y])|T], S):-
-	preferenceSatisfaction(Offer, Customer,[activity(Y)|T], S1),
+preferenceSatisfaction(offer(D,A,C,Vf,Vt,P,Du,G), Customer, [activity([X|Y])|T], S):-
+	preferenceSatisfaction(offer(D,A,C,Vf,Vt,P,Du,G), Customer,[activity(Y)|T], S1),
 	customerPreferredActivity(Customer,X,R),
-	S is R + S1.
+	((contains(A,X),S is R + S1);((\+contains(A,X),S is S1))).
 	
 preferenceSatisfaction(Offer, Customer, [X|T], S):-
 	X \= means(_),
