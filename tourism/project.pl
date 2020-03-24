@@ -60,6 +60,29 @@ bigger_Or_Equal_Period(A,B,C,X,Y,Z):-
 overlapPeriod(period(A-B-C,X-Y-Z),period(A2-B2-C2,X2-Y2-Z2)):-
     bigger_Or_Equal_Period(X2,Y2,Z2,A,B,C),bigger_Or_Equal_Period(X,Y,Z,A2,B2,C2).
 
+preferenceSatisfaction(_, _, [], 0).
+
+preferenceSatisfaction(Offer, Customer, [means(X)|T], S):-
+	preferenceSatisfaction(Offer, Customer, T, S1),
+	customerPreferredMean(Customer,X,R),
+	S is R+S1.
+	
+preferenceSatisfaction(Offer, Customer, [accommodation(X)|T], S):-
+		preferenceSatisfaction(Offer, Customer, T, S1),
+		customerPreferredAccommodation(Customer,X,R),
+		S is R+S1.
+				
+preferenceSatisfaction(Offer, Customer, [activity([X|Y])|T], S):-
+	preferenceSatisfaction(Offer, Customer,[activity(Y)|T], S1),
+	customerPreferredActivity(Customer,X,R),
+	S is R + S1.
+	
+preferenceSatisfaction(Offer, Customer, [X|T], S):-
+	X \= means(_),
+	X \= accommodation(_),
+	X \= activity([_|_]),
+	preferenceSatisfaction(Offer, Customer,T, S).
+
 getOffer([],offer(_,_,_,_,_,_,_,_)).
 getOffer([activity(X)|T],offer(D,A,C,Vf,Vt,P,Du,G)):-
 	offerMean(offer(D,A,C,Vf,Vt,P,Du,G),_),
@@ -76,7 +99,6 @@ getOffer([budget(X)|T],offer(D,A,C,Vf,Vt,P,Du,G)):-
 getOffer([period(X,Y)|T],offer(D,A,C,Vf,Vt,P,Du,G)):-
 	offerMean(offer(D,A,C,Vf,Vt,P,Du,G),_),
 	overlapPeriod(period(X,Y),P),getOffer(T,offer(D,A,C,Vf,Vt,P,Du,G)).
-
 
 	
 	
