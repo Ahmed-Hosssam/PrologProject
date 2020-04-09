@@ -104,5 +104,8 @@ getOffer([period(X,Y)|T],offer(D,A,C,Vf,Vt,P,Du,G)):-
 	offerMean(offer(D,A,C,Vf,Vt,P,Du,G),_),
 	overlapPeriod(period(X,Y),P),getOffer(T,offer(D,A,C,Vf,Vt,P,Du,G)).
 
-	
+recommendOfferForCustomer(_, [], []).
+recommendOfferForCustomer(Prefs, ChosenPrefs, O):-
+    possibleSubset(Prefs,ChosenPrefs),
+    getOffer(ChosenPrefs,O).
 	
