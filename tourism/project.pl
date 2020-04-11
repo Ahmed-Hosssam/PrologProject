@@ -125,6 +125,7 @@ len([_|T],L):-
 	L is L1 +1.
 	
 	
+	
 recommendOffer(Customers, PreferenceList, Offer, CustomersChosen) :-
 	offerMean(Offer,_),
 	Offer = offer(_, _, _, _,_,_ ,_, N),
